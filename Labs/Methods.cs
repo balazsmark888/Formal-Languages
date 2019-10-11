@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 
-namespace lab1
+namespace Labs
 {
     public static class Methods
     {
@@ -48,8 +48,13 @@ namespace lab1
             for (var i = 4; i < lines.Count; i++)
             {
                 var values = lines[i].Split(' ');
-
+                var sourceState = states.Find(p => p.Id == int.Parse(values[0]));
+                var destState = states.Find(p => p.Id == int.Parse(values[2]));
+                sourceState.OutgoingStates.Add(new Tuple<State, char>(destState, values[1][0]));
+                destState.IncomingStates.Add(new Tuple<State, char>(sourceState, values[1][0]));
             }
+
+            return states;
         }
 
         private static List<State> CreateStatesFromIds(IEnumerable<int> ids)

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace lab1
+namespace Labs
 {
     public class State
     {
