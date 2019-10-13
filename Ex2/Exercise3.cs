@@ -7,7 +7,7 @@ using Labs;
 
 namespace Ex2
 {
-    public class Exercise2
+    public class Exercise3
     {
         public static readonly string Path = "D:\\Informatics\\Formal\\lab1\\Labs\\Resources\\test_3_szamos.txt";
 

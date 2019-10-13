@@ -15,7 +15,6 @@ namespace Ex1
         {
             A();
             B();
-
         }
 
         public static void A()
