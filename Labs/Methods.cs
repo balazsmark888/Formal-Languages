@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static System.String;
 
 namespace Labs
 {
@@ -29,6 +30,52 @@ namespace Labs
             }
         }
 
+        public static string GenerateDotCodeFromAutomata(List<State> automata)
+        {
+            return $@"digraph G{{
+rankstep = 0.5;
+nodestep = 0.5;
+rankdir = LR;
+node [shape = circle, fontsize = 16];
+fontsize = 10;
+compound = true;
+
+{TerminalStatesDotTemplate(automata)}
+
+{StateConnectionsDotTemplate(automata)}
+}}";
+        }
+
+        public static string TerminalStatesDotTemplate(List<State> automata)
+        {
+            return automata.Where(p => p.IsTerminal)
+                .Aggregate(Empty, (current, state) => $@"{current}
+{state.Id} [shape = doublecircle];");
+        }
+
+        public static string StateConnectionsDotTemplate(List<State> automata)
+        {
+            var template = StartingStateConnectionsDotTemplate(automata);
+            foreach (var state in automata)
+            {
+                foreach (var (outgoingState, possibleCharacters) in state.OutgoingStates)
+                {
+                    template = possibleCharacters.Aggregate(template, (current, c) => $@"{current}
+{state.Id} -> {outgoingState.Id} [label = {c}]");
+                }
+            }
+
+            return template;
+        }
+
+        public static string StartingStateConnectionsDotTemplate(List<State> automata)
+        {
+            return automata.Where(p => p.IsStartingState)
+                .Aggregate(Empty, (current, state) => $@"{current}
+i{state.Id} [shape = point, style = invis];
+i{state.Id} -> {state.Id}");
+        }
+
         public static bool IsWordPartOfLanguage(State currentState, string word, int index)
         {
             if (index == word.Length)
@@ -43,13 +90,13 @@ namespace Labs
         {
             var lines = File.ReadAllText(path).Split('\n').ToList();
             var states = CreateStatesFromIds(lines[0].Split(' ').Select(int.Parse).ToList());
-            BuildProperties(states, lines);
-            BuildConnections(states, lines);
+            BuildPropertiesOfStates(states, lines);
+            BuildConnectionsOfStates(states, lines);
 
             return states;
         }
 
-        private static void BuildProperties(IReadOnlyCollection<State> states, List<string> lines)
+        private static void BuildPropertiesOfStates(IReadOnlyCollection<State> states, List<string> lines)
         {
             if (lines == null) throw new ArgumentNullException(nameof(lines));
             var startingIds = lines[2].Split(' ').Select(int.Parse).ToList();
@@ -64,7 +111,7 @@ namespace Labs
             }
         }
 
-        private static void BuildConnections(List<State> states, IReadOnlyList<string> lines)
+        private static void BuildConnectionsOfStates(List<State> states, IReadOnlyList<string> lines)
         {
             for (var i = 4; i < lines.Count; i++)
             {
