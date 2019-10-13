@@ -49,8 +49,16 @@ namespace Labs
                 var values = lines[i].Split(' ');
                 var sourceState = states.Find(p => p.Id == int.Parse(values[0]));
                 var destState = states.Find(p => p.Id == int.Parse(values[2]));
-                sourceState.OutgoingStates.Add(new Tuple<State, char>(destState, values[1][0]));
-                destState.IncomingStates.Add(new Tuple<State, char>(sourceState, values[1][0]));
+                if (sourceState.OutgoingStates.Any(p => p.Item1.Id == destState.Id))
+                {
+                    sourceState.OutgoingStates.Find(p => p.Item1.Id == destState.Id).Item2.Add(values[1][0]);
+                    destState.IncomingStates.Find(p => p.Item1.Id == sourceState.Id).Item2.Add(values[1][0]);
+                }
+                else
+                {
+                    sourceState.OutgoingStates.Add(new Tuple<State, List<char>>(destState, new List<char>(values[1][0])));
+                    destState.IncomingStates.Add(new Tuple<State, List<char>>(sourceState, new List<char>(values[1][0])));
+                }
             }
 
             return states;
