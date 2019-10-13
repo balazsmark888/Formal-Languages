@@ -34,7 +34,6 @@ namespace Labs
             var lines = File.ReadAllText(path).Split('\n').ToList();
             var ids = lines[0].Split(' ').Select(int.Parse).ToList();
             var states = CreateStatesFromIds(ids);
-            var chars = lines[1].Split(' ').ToList();
             var startingIds = lines[2].Split(' ').Select(int.Parse).ToList();
             var terminalIds = lines[3].Split(' ').Select(int.Parse).ToList();
             foreach (var state in states.Where(p => startingIds.Contains(p.Id)))
