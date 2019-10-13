@@ -50,13 +50,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\test_1.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Labs\Labs.csproj">
       <Project>{0caf5cdd-cac0-432a-a65e-33d33323ccf4}</Project>
       <Name>Labs</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
