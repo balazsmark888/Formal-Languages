@@ -11,11 +11,15 @@ namespace Ex2
         public static void Main(string[] args)
         {
             var automata = Methods.ReadAutomata(Path);
-            Console.WriteLine("Enter word:");
-            var word = Console.ReadLine();
-            Console.WriteLine(automata.Where(p => p.IsStartingState).Any(p => Methods.IsWordPartOfLanguage(p, word, 0))
-                ? "The word is part of the language."
-                : "The word is not part of the language.");
+            var word = string.Empty;
+            while (word != null && !word.Equals("end", StringComparison.CurrentCultureIgnoreCase))
+            {
+                Console.WriteLine("Enter word:");
+                word = Console.ReadLine();
+                Console.WriteLine(automata.Where(p => p.IsStartingState).Any(p => Methods.IsWordPartOfLanguage(p, word, 0))
+                    ? "The word is part of the language."
+                    : "The word is not part of the language.");
+            }
         }
     }
 }

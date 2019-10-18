@@ -96,6 +96,56 @@ i{state.Id} -> {state.Id}");
             return states;
         }
 
+        public static void DeleteStateFromAutomata(List<State> automata, State state)
+        {
+            automata.Remove(state);
+            automata.ForEach(p =>
+            {
+                if (p.OutgoingStates.Any(pp => pp.Item1.Id == state.Id))
+                {
+                    p.OutgoingStates.Remove(p.OutgoingStates.Find(pp => pp.Item1.Id == state.Id));
+                }
+                if (p.IncomingStates.Any(pp => pp.Item1.Id == state.Id))
+                {
+                    p.IncomingStates.Remove(p.IncomingStates.Find(pp => pp.Item1.Id == state.Id));
+                }
+            });
+        }
+
+        public static void PrintAutomata(List<State> automata)
+        {
+            var possibleChars = new List<char>();
+            foreach (var state in automata)
+            {
+                Console.Write(state.Id + " ");
+                possibleChars.AddRange(state.OutgoingStates.SelectMany(p => p.Item2));
+                possibleChars = possibleChars.Distinct().ToList();
+            }
+            Console.WriteLine();
+            possibleChars.ForEach(p => Console.Write(p + " "));
+            Console.WriteLine();
+            foreach (var state in automata.Where(p => p.IsStartingState))
+            {
+                Console.Write(state.Id + " ");
+            }
+            Console.WriteLine();
+            foreach (var state in automata.Where(p => p.IsTerminal))
+            {
+                Console.Write(state.Id + " ");
+            }
+            Console.WriteLine();
+            foreach (var state in automata)
+            {
+                foreach (var (outState, charList) in state.OutgoingStates)
+                {
+                    foreach (var character in charList)
+                    {
+                        Console.WriteLine($"{state.Id} {character} {outState.Id}");
+                    }
+                }
+            }
+        }
+
         private static void BuildPropertiesOfStates(IReadOnlyCollection<State> states, List<string> lines)
         {
             if (lines == null) throw new ArgumentNullException(nameof(lines));
